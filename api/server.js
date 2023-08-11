@@ -16,5 +16,10 @@ server.use('/api/projects', projectsRouter)
 server.get('/', (req, res) => {
     res.json({ message: 'Welcome to the API' });
   });
-
+  server.use((err, req, res, next) => {
+    console.error(err.stack); // Log the stack trace
+    res.status(500).send('Something broke!');
+  });
+  
+      
 module.exports = server;

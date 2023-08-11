@@ -2,24 +2,32 @@
 const Actions = require('./actions-model');
 
 function validateAction(req, res, next) {
-    const {project_id, description, notes } =req.body;
+    const { project_id, description, notes } = req.body;
     if (!project_id || !description || !notes) {
-        res.status(400).json({ message: 'missing required fields '})
+      return res.status(400).json({ message: 'missing required fields' });
     } else {
-        next()
+      next();
     }
-}
-
-function actionExists(req, res, next) {
+  }
+  
+  function validateActionId(req, res, next) {
     const { id } = req.params;
     Actions.get(id)
-    .then(action => {
+      .then(action => {
         if (action) {
-            req.action = action;
-            next();
+          req.action = action;
+          next();
         } else {
-            res.status(404).json({ message: 'Action not found'});
+          res.status(404).json({ message: 'Action not found' });
         }
-    })
-    .catch(err => res.status(500).json({ message: 'Failed to check action existence'}))
-}
+      })
+      .catch(err => {
+        res.status(500).json({ message: 'Failed to check action existence' });
+      });
+  }
+  
+  module.exports = {
+    validateAction,
+    validateActionId
+  };
+  
